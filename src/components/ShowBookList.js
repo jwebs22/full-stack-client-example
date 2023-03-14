@@ -6,35 +6,25 @@ import BookCard from './BookCard';
 import { useState, useEffect } from 'react';
 
 
-const BACK_END_URL = "localhost:3000/api/books"
+const REACT_BACKEND = process.env.REACT_APP_ENDPOINT;
 
 function ShowBookList(props){
 
   // setup hook
   const [books, setBooks] = useState([]);  
 
-  // after component is rendered 
+  // after component is rendered , get books from endpoint
   useEffect(() => {
     axios
-    .get(BACK_END_URL)
+    .get(REACT_BACKEND)
     .then(res => {
-      setBooks(res);
+      setBooks(res.data);
     })
     .catch(err =>{
       console.log('Error from ShowBookList');
     })
-  })
+  }, [])
 
-  let bookList;
-  //check if the books are not empty
-  if(!books) {
-    bookList = "there is no book recored!";
-  } else {
-    // if there are book results, map them onto Book Cards
-    bookList = books.map((book, k) =>
-      <BookCard book={book} key={k} />
-    );
-  }
   return (
 
     <div className="ShowBookList">
@@ -57,7 +47,9 @@ function ShowBookList(props){
         </div>
 
         <div className="list">
-              {bookList}
+              {books.map((book, k) =>
+      <BookCard book={book} key={k} />
+    )}
         </div>
       </div>
     </div> );
